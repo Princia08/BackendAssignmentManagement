@@ -33,7 +33,7 @@ function getAssignments(req, res){
 
 // Récupérer un assignment par son id (GET)
 function getAssignment(req, res){
-    let assignmentId = req.params.id;
+    let assignmentId = req.params._id;
     Assignment.findById(assignmentId, (err, assignment) =>{
         if(err){res.send(err)}
         res.json(assignment);
@@ -50,7 +50,7 @@ function getAssignment(req, res){
 // Ajout d'un assignment (POST)
 function postAssignment(req, res){
     let assignment = new Assignment();
-    assignment.id = req.body.id;
+    assignment.id = req.body._id;
     assignment.nom = req.body.nom;
     assignment.dateDeRendu = req.body.dateDeRendu;
     assignment.rendu = req.body.rendu;
@@ -87,7 +87,7 @@ function updateAssignment(req, res) {
 // l'id est bien le _id de mongoDB
 function deleteAssignment(req, res) {
 
-    Assignment.findByIdAndRemove(req.params.id, (err, assignment) => {
+    Assignment.findByIdAndRemove(req.params._id, (err, assignment) => {
         if (err) {
             res.send(err);
         }
