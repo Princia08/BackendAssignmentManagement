@@ -10,7 +10,7 @@ let AssignmentSchema = Schema({
     idMatiere: String,
     idUser: String,
     file: String,
-    remarque: String,
+    remarque: String
 });
 
 AssignmentSchema.plugin(mongoosePaginate);

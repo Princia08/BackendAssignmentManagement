@@ -1,7 +1,9 @@
+require('dotenv').config();
 let express = require('express');
 let app = express();
 let bodyParser = require('body-parser');
 let assignment = require('./routes/assignments');
+let user = require('./routes/users');
 
 let mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
@@ -43,7 +45,7 @@ let port = process.env.PORT || 8010;
 // les routes
 const prefix = '/api';
 
-// http://serveur..../assignments
+// assignments
 app.route(prefix + '/assignments')
   .post(assignment.postAssignment)
   .put(assignment.updateAssignment)
@@ -53,6 +55,19 @@ app.route(prefix + '/assignments/:id')
   .get(assignment.getAssignment)
   .delete(assignment.deleteAssignment);
 
+  
+// users
+app.route(prefix + '/users')
+  .get(user.getUsers)
+
+app.route(prefix + '/users/:id')
+  .get(user.getUser)
+
+app.route(prefix + '/login')
+  .post(user.login)
+
+app.route(prefix + '/user/me/:token')
+  .get(user.getMyInformation)
 
 // On démarre le serveur
 app.listen(port, "0.0.0.0");

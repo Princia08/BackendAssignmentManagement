@@ -7,9 +7,10 @@ let UserSchema = Schema({
     nom: String,
     prenom: String,
     dateDeNaissance: Date,
-    motDepasse: String,
+    mail: String, 
+    motDePasse: String,
     image: String,
-    type: Int16Array,
+    type: Number
 });
 
 UserSchema.plugin(mongoosePaginate);
