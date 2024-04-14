@@ -1,8 +1,8 @@
 const User = require('../model/user');
 const jwtService = require('../services/jwtService');
-let ObjectID = require('mongodb').ObjectID;
 const bcrypt = require('bcrypt');
 const saltRounds = 10; // Nombre de tours de hachage
+const validator = require('validator');
 
 // Récupérer tous les users (GET)
 function getUsers(req, res){
@@ -36,40 +36,24 @@ function getMyInformation(req, res) {
     })
 }
 
-function login(req, res){
+async function login(req, res){
     let mail = req.body.mail;
     let password = req.body.password;
 
-    User.findOne({ mail: mail }, (err, user) =>{
-        if(err) {
-            res.send(err)
-            return 
-        }
-        if(!mail || !password){
-            res.status(401).send('L\'email et le mot de passe sont des champs obligatoires')
-            return
-        }
-        if(user === null){
-            res.status(401).send('Email ou mot de passe incorrect')
-            return
-        }
-        // comparer le mot de passe hashé et le mot de passe entré pas l'user
-        bcrypt.compare(password, user.motDePasse, (err, result) => {
-            if(err) return err;
-            if(!result) {
-                res.status(401).send('Email ou mot de passe incorrect')
-                return
-            }
-        })
+    if(!mail || !password) return res.status(401).send('L\'email et le mot de passe sont des champs obligatoires')
 
-        if(!user.isActivate){
-            res.status(401).send('Veuillez contacter le responsable, votre compte n\'est pas encore activé')
-            return
-        }
+    const user = await User.findOne({ mail: mail })
+            
+    if(user === null) return res.status(401).send('L\'utilisateur que vous avez entré n\'existe pas')
 
-        data = {id: user._id, nom: user.prenom, type: user.type}
-        res.json(jwtService.sign(data))
-    })
+    // comparer le mot de passe hashé et le mot de passe entré pas l'user
+    const verifiedPassword = await bcrypt.compare(password, user.motDePasse)
+    if(!verifiedPassword) return res.status(401).send('Email ou mot de passe incorrect')
+
+    if(!user.isActivate) return res.status(401).send('Veuillez contacter le responsable, votre compte n\'est pas encore activé')
+
+    const data = { id: user._id, nom: user.prenom, type: user.type }
+    res.json(jwtService.sign(data))
 }
 
 // Ajout d'un user (POST)
@@ -86,11 +70,18 @@ async function addUser(req, res) {
     user.isAdmin = req.body.isAdmin;
 
     console.log("POST user reçu :");
-    console.log(user)
+
+    let errorMessage = ""
+
+    if(!validator.isEmail(user.mail)) return res.status(401).send('Veuillez entrer un mail valide')
+
+    const existingUser = await User.findOne({ mail: user.mail })
+    if(existingUser) return res.status(401).send('Cet email est déjà utilisé, veuillez choisir un autre')
 
     user.save( (err) => {
         if(err){
             res.status(500).send('Error while saving user: ' + err);
+            return;
         }
         res.json({ message: `${user.nom} saved!`})
     })
