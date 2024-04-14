@@ -3,14 +3,15 @@ let Schema = mongoose.Schema;
 const mongoosePaginate = require('mongoose-aggregate-paginate-v2');
 
 let UserSchema = Schema({
-    _id: String,
     nom: String,
     prenom: String,
     dateDeNaissance: Date,
     mail: String, 
     motDePasse: String,
     image: String,
-    type: Number
+    type: Number,
+    isActivate: Boolean,
+    isAdmin: Boolean
 });
 
 UserSchema.plugin(mongoosePaginate);

@@ -57,22 +57,24 @@ app.route(prefix + '/assignments/:id')
 
   
 // users
-app.route(prefix + '/users')
+userUri = prefix + '/users';
+app.route(userUri)
   .get(user.getUsers)
+  .post(user.addUser)
 
-app.route(prefix + '/users/:id')
+app.route(userUri + '/:id')
   .get(user.getUser)
 
-app.route(prefix + '/login')
+app.route(userUri + '/login')
   .post(user.login)
 
-app.route(prefix + '/user/me/:token')
+app.route(userUri + '/me/:token')
   .get(user.getMyInformation)
 
+
+app.timeout = 300000;
 // On démarre le serveur
 app.listen(port, "0.0.0.0");
 console.log('Serveur démarré sur http://localhost:' + port);
 
 module.exports = app;
-
-
