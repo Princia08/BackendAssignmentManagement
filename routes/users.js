@@ -71,8 +71,6 @@ async function addUser(req, res) {
 
     console.log("POST user reçu :");
 
-    let errorMessage = ""
-
     if(!validator.isEmail(user.mail)) return res.status(401).send('Veuillez entrer un mail valide')
 
     const existingUser = await User.findOne({ mail: user.mail })
