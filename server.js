@@ -4,7 +4,7 @@ let app = express();
 let bodyParser = require("body-parser");
 let assignment = require("./routes/assignments");
 let user = require("./routes/users");
-let matiere = require("./routes/matiereRoute");
+let matiere = require("./routes/matieres");
 
 let mongoose = require("mongoose");
 mongoose.Promise = global.Promise;
@@ -69,17 +69,20 @@ app
 
 // users
 userUri = prefix + "/users";
-app.route(userUri).get(user.getUsers).post(user.addUser);
+app.route(userUri)
+  .get(user.getInactivatedUsers)
+  .post(user.addUser)
+  .put(user.updateUser);
 
 app.route(userUri + "/:id").get(user.getUser);
-
 app.route(userUri + "/login").post(user.login);
-
 app.route(userUri + "/me/:token").get(user.getMyInformation);
 
 //matiere
 matiereUri = prefix + "/matieres";
-app.route(matiereUri).get(matiere.getAllMatieres);
+app.route(matiereUri)
+.get(matiere.getAllMatieres)
+.post(matiere.postMatiere);
 
 app.timeout = 300000;
 // On démarre le serveur

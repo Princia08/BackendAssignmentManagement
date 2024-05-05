@@ -3,9 +3,13 @@ let Schema = mongoose.Schema;
 const mongoosePaginate = require('mongoose-aggregate-paginate-v2');
 
 let MatiereSchema = Schema({
-    _id: String,
     nom: String, 
-    idUser: String //id Du prof
+    prof: {
+        nom: String,
+        prenom: String,
+        image: String
+    },
+    image: String
 });
 
 MatiereSchema.plugin(mongoosePaginate);
