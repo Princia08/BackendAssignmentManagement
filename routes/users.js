@@ -5,8 +5,8 @@ const saltRounds = 10; // Nombre de tours de hachage
 const validator = require('validator');
 
 // Récupérer tous les users (GET)
-function getUsers(req, res){
-    User.find((err, user) => {
+function getInactivatedUsers(req, res){
+    User.find({ isActivate: false }, (err, user) => {
         if(err){
             res.send(err)
         }
@@ -21,15 +21,10 @@ function getUser(req, res){
         if(err){res.send(err)}
         res.json(user);
     })
-    // User.findOne({ _id: userId }, (err, user) => {
-    //     if(err){res.send(err)}
-    //     res.json(user); 
-    // })
 }
 
 function getMyInformation(req, res) {
     let data = jwtService.verify(req.params.token)
-    console.log(data.user.id)
     User.findById(data.user.id, (err, user) =>{
         if(err){res.send(err)}
         res.json(user);
@@ -69,8 +64,6 @@ async function addUser(req, res) {
     user.isActivate = req.body.isActivate;
     user.isAdmin = req.body.isAdmin;
 
-    console.log("POST user reçu :");
-
     if(!validator.isEmail(user.mail)) return res.status(401).send('Veuillez entrer un mail valide')
 
     const existingUser = await User.findOne({ mail: user.mail })
@@ -85,9 +78,26 @@ async function addUser(req, res) {
     })
 }
 
+// Activer un user (PUT)
+function updateUser(req, res) {
+    User.findByIdAndUpdate(
+      req.body._id,
+      req.body,
+      { new: true },
+      (err, user) => {
+        if (err) {
+          console.log(err);
+          res.send(err);
+        } else {
+          res.json({ message: `${user.nom} updated!` });
+        }
+      }
+    );
+  }
+
 function decodeToken(req, res) {
     let token = req.params.token;
     res.json(jwtService.verify(token))
 }
 
-module.exports = { getUsers, getUser, login, decodeToken, getMyInformation, addUser };
+module.exports = { updateUser, getInactivatedUsers, getUser, login, decodeToken, getMyInformation, addUser };
