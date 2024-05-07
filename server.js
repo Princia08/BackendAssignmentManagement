@@ -1,5 +1,7 @@
-require("dotenv").config();
-let express = require("express");
+require('dotenv').config();
+let express = require('express');
+const multer = require('multer');
+
 let app = express();
 let bodyParser = require("body-parser");
 let assignment = require("./routes/assignments");
@@ -52,8 +54,27 @@ app.use(bodyParser.json());
 // Obligatoire si déploiement dans le cloud !
 let port = process.env.PORT || 8010;
 
+
+// stocker image uploadée dans le dossier images
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+     cb(null, 'images/');
+  },
+  filename: function (req, file, cb) {
+     cb(null, file.originalname);
+  }
+ });
+
+const upload = multer({ storage: storage });
+
+
 // les routes
 const prefix = "/api";
+
+// upload image
+app.post(prefix + '/upload', upload.single('image'), (req, res) => {
+  res.json('File uploaded successfully');
+});
 
 // assignments
 app
