@@ -1,3 +1,4 @@
+const { ObjectID } = require('mongodb');
 let mongoose = require('mongoose');
 let Schema = mongoose.Schema;
 const mongoosePaginate = require('mongoose-aggregate-paginate-v2');
@@ -5,6 +6,7 @@ const mongoosePaginate = require('mongoose-aggregate-paginate-v2');
 let MatiereSchema = Schema({
     nom: String, 
     prof: {
+        _id: ObjectID, 
         nom: String,
         prenom: String,
         image: String

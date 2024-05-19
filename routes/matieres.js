@@ -14,6 +14,7 @@ function postMatiere(req, res) {
   let matiere = new Matiere();
   matiere.nom = req.body.nom;
   matiere.image = req.body.image;
+  matiere.prof._id = req.body.prof._id;
   matiere.prof.nom = req.body.prof.nom;
   matiere.prof.prenom = req.body.prof.prenom;
   matiere.prof.image = req.body.prof.image;
