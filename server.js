@@ -1,6 +1,7 @@
 require('dotenv').config();
 let express = require('express');
 const multer = require('multer');
+const path = require('path');
 
 let app = express();
 let bodyParser = require("body-parser");
@@ -105,6 +106,8 @@ matiereUri = prefix + "/matieres";
 app.route(matiereUri)
 .get(matiere.getAllMatieres)
 .post(matiere.postMatiere);
+
+app.use(prefix + "/images", express.static(path.join(__dirname, "images")));
 
 app.timeout = 300000;
 // On démarre le serveur
