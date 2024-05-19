@@ -10,7 +10,7 @@ const getAllMatieres = (req, res) => {
 };
 
 // Ajout d'une matière (POST)
-function postMatiere(req, res) {
+async function postMatiere(req, res) {
   let matiere = new Matiere();
   matiere.nom = req.body.nom;
   matiere.image = req.body.image;
@@ -19,8 +19,10 @@ function postMatiere(req, res) {
   matiere.prof.prenom = req.body.prof.prenom;
   matiere.prof.image = req.body.prof.image;
   
-  console.log(matiere);
+  const existingMatiere = await Matiere.findOne({ nom: matiere.nom })
+  if(existingMatiere) return res.status(401).send("La matière " + matiere.nom + " existe déjà, veuillez choisir une autre")
 
+  
   matiere.save((err, savedMatiere) => {
     if (err) {
       console.error("Error saving matiere:", err);
