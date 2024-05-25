@@ -78,15 +78,18 @@ app.post(prefix + '/upload', upload.single('image'), (req, res) => {
 });
 
 // assignments
+assignmentUri = prefix + "/assignments";
 app
-  .route(prefix + "/assignments")
+  .route(assignmentUri)
   .post(assignment.postAssignment)
   .put(assignment.updateAssignment)
   .get(assignment.getAssignments);
+  
+app.route(assignmentUri+"/me/:token").get(assignment.getMyAssignment);
 
 app
-  .route(prefix + "/assignments/:id")
-  .get(assignment.getAssignment)
+  .route(assignmentUri+"/:id")
+  .get(assignment.getAssignmentDetails)
   .delete(assignment.deleteAssignment);
 
 // users

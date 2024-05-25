@@ -1,4 +1,5 @@
 let Assignment = require("../model/assignment");
+const jwtService = require('../services/jwtService');
 
 // Récupérer tous les assignments (GET)
 /*
@@ -31,27 +32,43 @@ function getAssignments(req, res) {
   );
 }
 
+
+function getMyAssignment(req, res) {
+  let data = jwtService.verify(req.params.token)
+  Assignment.find({idUser: data.user.id})
+  .populate('idMatiere').exec((err, assignment) =>{
+      if(err){res.send(err)}
+      res.json(assignment);
+  })
+}
+
+
+// Récupérer un assignment par son id (GET)
+function getAssignmentDetails(req, res) {
+  let assignmentId = req.params.id;
+  Assignment.findById(assignmentId)
+  .populate('idMatiere').exec((err, assignment) => {
+    if (err) {
+      res.send(err);
+    }
+    res.json(assignment);
+  });
+}
+
+
 // Récupérer un assignment par son id (GET)
 function getAssignment(req, res) {
-  let assignmentId = req.params._id;
+  let assignmentId = req.params.id;
   Assignment.findById(assignmentId, (err, assignment) => {
     if (err) {
       res.send(err);
     }
     res.json(assignment);
   });
-
-  /*
-    Assignment.findOne({id: assignmentId}, (err, assignment) =>{
-        if(err){res.send(err)}
-        res.json(assignment);
-    })
-    */
 }
 
 // Ajout d'un assignment (POST)
 function postAssignment(req, res) {
-  console.log(req.body.nom);
   let assignment = new Assignment();
   assignment.nom = req.body.nom;
   assignment.dateDeRendu = req.body.dateDeRendu;
@@ -90,8 +107,6 @@ function updateAssignment(req, res) {
       } else {
         res.json({ message: "updated" });
       }
-
-      // console.log('updated ', assignment)
     }
   );
 }
@@ -113,4 +128,6 @@ module.exports = {
   getAssignment,
   updateAssignment,
   deleteAssignment,
+  getMyAssignment,
+  getAssignmentDetails
 };
