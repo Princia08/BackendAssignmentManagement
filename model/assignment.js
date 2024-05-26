@@ -19,13 +19,3 @@ AssignmentSchema.plugin(mongoosePaginate);
 // assignment est le nom de la collection dans la base de données
 // Mongoose tolère certaines erreurs dans le nom (ex: Assignent au lieu de assignments)
 module.exports = mongoose.model("assignments", AssignmentSchema);
-
-
-
-
-nomMatiere: assignments[i].idMatiere.image,
-imageMatiere: assignments[i].idMatiere &&  assignments[i].idMatiere.image ? assignments[i].idMatiere.image : "imageMatiereDefault.jpg",
-
-nomProf :  assignments[i].idMatiere.prof.nom,
-prenomProf :  assignments[i].idMatiere.prof.prenom,
-imageProf: assignments[i].idMatiere &&  assignments[i].idMatiere.prof.image ? assignments[i].idMatiere.prof.image : "imageProfDefault.png",
