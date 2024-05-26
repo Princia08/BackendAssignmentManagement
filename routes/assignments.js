@@ -78,9 +78,6 @@ function postAssignment(req, res) {
   assignment.remarque = req.body.remarque;
   assignment.file = req.body.file;
 
-  console.log("POST assignment reçu :");
-  console.log(assignment);
-
   assignment.save((err, savedAssignment) => {
     if (err) {
       console.error("Error saving assignment:", err);
