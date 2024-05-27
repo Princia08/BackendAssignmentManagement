@@ -6,7 +6,7 @@ let AssignmentSchema = Schema({
   dateDeRendu: Date,
   nom: String,
   rendu: Boolean,
-  idMatiere: { type: Schema.Types.ObjectId, ref : 'matiere' },
+  idMatiere: { type: String, ref : 'matiere' },
   idUser: String,
   file: String,
   remarque: String,
