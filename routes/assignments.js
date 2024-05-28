@@ -170,7 +170,7 @@ async function getAssignmentByMatiereNonCoriger(req, res) {
   // if (data) {
   // let matiereUser = await Matiere.find({ "prof.id": data.id });
   let matiereUser = Matiere.find({
-    "prof._id": ObjectId(data.id),
+    "prof._id": ObjectId(data.user.id),
   }).exec((err, results) => {
     if (err) {
       console.error("Error fetching matieres: ", err);
