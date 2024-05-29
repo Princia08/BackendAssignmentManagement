@@ -1,3 +1,4 @@
+const { Decimal128 } = require("mongodb");
 let Assignment = require("../model/assignment");
 const jwtService = require('../services/jwtService');
 
@@ -77,6 +78,7 @@ function postAssignment(req, res) {
   assignment.idMatiere = req.body.idMatiere;
   assignment.remarque = req.body.remarque;
   assignment.file = req.body.file;
+  assignment.note = 0;
 
   assignment.save((err, savedAssignment) => {
     if (err) {
