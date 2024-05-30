@@ -40,7 +40,7 @@ function getAssignments(req, res) {
 
 function getMyAssignment(req, res) {
   let data = jwtService.verify(req.params.token)
-  Assignment.find({idUser: data.user.id})
+  Assignment.find({idUser: data.id})
   .populate('idMatiere').exec((err, assignment) =>{
       if(err){res.send(err)}
       res.json(assignment);
