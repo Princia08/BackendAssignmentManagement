@@ -37,15 +37,52 @@ function getAssignments(req, res) {
   );
 }
 
+// function getMyAssignment(req, res) {
+//   let data = jwtService.verify(req.params.token);
+//   Assignment.find({ idUser: data.user.id })
+//     .populate("idMatiere")
+//     .exec((err, assignment) => {
+//       if (err) {
+//         res.send(err);
+//       }
+//       res.json(assignment);
+//     });
+// }
+
 function getMyAssignment(req, res) {
-  let data = jwtService.verify(req.params.token);
+  const data = jwtService.verify(req.params.token);
+  const page = parseInt(req.query.page) || 1; // Default to page 1 if not provided
+  const limit = parseInt(req.query.limit) || 10; // Default to limit of 10 if not provided
+
+  const skip = (page - 1) * limit;
+
   Assignment.find({ idUser: data.user.id })
     .populate("idMatiere")
-    .exec((err, assignment) => {
+    .skip(skip)
+    .limit(limit)
+    .exec(async (err, assignments) => {
       if (err) {
-        res.send(err);
+        res.status(500).json({ error: err.message });
+      } else {
+        const totalDocs = await Assignment.countDocuments({
+          idUser: data.user.id,
+        });
+        console.log(skip);
+        const totalPages = Math.ceil(totalDocs / limit);
+
+        res.status(200).json({
+          assignments: assignments,
+          totalDocs: totalDocs,
+          limit: limit,
+          page: page,
+          totalPages: totalPages,
+          pagingCounter: skip + 1,
+          hasPrevPage: page > 1,
+          hasNextPage: page < totalPages,
+          prevPage: page > 1 ? page - 1 : null,
+          nextPage: page < totalPages ? page + 1 : null,
+        });
       }
-      res.json(assignment);
     });
 }
 
@@ -242,28 +279,30 @@ async function getAssignmentByMatiereCoriger(req, res) {
   try {
     const token = req.query.token;
     const data = jwtService.verify(token);
-
     const matiereUser = await Matiere.findOne({
-      "prof._id": data.user.id,
+      "prof._id": ObjectId(data.user.id),
+      //"prof._id": ObjectId("66219336b197353dc42f59b7"),
     }).exec();
-    // if (!matiereUser) {
-    //   return res.status(404).json({ message: "Matiere not found" });
-    // }
+    if (!matiereUser) {
+      return res.status(404).json({ message: "Matiere not found" });
+    }
 
-    const matiereId = "66537b96fb30874594c62dc2"; // You may need to derive this dynamically
+    // const matiereId = "66537b96fb30874594c62dc2"; // You may need to derive this dynamically
+
+    const matiereId = matiereUser._id; // You may need to derive this dynamically
     const page = parseInt(req.query.page) || 1; // Default to page 1 if not provided
     const limit = parseInt(req.query.limit) || 10; // Default to limit of 10 if not provided
     const skip = (page - 1) * limit;
 
     const assignments = await Assignment.find({
-      idMatiere: matiereId,
+      idMatiere: ObjectId(matiereId),
       rendu: true,
     })
       .populate("idMatiere")
       .skip(skip)
       .limit(limit)
       .exec();
-
+    console.log(skip);
     const totalDocs = await Assignment.countDocuments({
       idMatiere: ObjectId(matiereId),
       rendu: true,
@@ -350,11 +389,13 @@ async function getAssignmentByMatiereNonCoriger(req, res) {
     const matiereUser = await Matiere.findOne({
       "prof._id": ObjectId(data.user.id),
     }).exec();
-    // if (!matiereUser) {
-    //   return res.status(404).json({ message: "Matiere not found" });
-    // }
+    console.log(data.user.id);
+    if (!matiereUser) {
+      return res.status(404).json({ message: "Matiere not found" });
+    }
 
-    const matiereId = "66537b96fb30874594c62dc2"; // This should ideally be derived dynamically
+    // const matiereId = "66537b96fb30874594c62dc2"; // This should ideally be derived dynamically
+    const matiereId = matiereUser._id;
     const page = parseInt(req.query.page) || 1; // Default to page 1 if not provided
     const limit = parseInt(req.query.limit) || 10; // Default to limit of 10 if not provided
     const skip = (page - 1) * limit;
@@ -414,6 +455,29 @@ function corrigerAssignment(req, res) {
   );
 }
 
+function deleteManyAssignment(req, res) {
+  // Assignment.deleteMany({ idUser: null }, (err, assignment) => {
+  //   if (err) {
+  //     res.send(err);
+  //   }
+  //   res.json({ message: `many deleted` });
+  // });
+
+  Assignment.updateMany(
+    { note: null },
+    { $set: { note: 12 } },
+    (err, result) => {
+      if (err) {
+        res.status(500).json({ error: err.message });
+      } else {
+        res
+          .status(200)
+          .json({ message: `${result.nModified} document(s) updated` });
+      }
+    }
+  );
+}
+
 module.exports = {
   getAssignments,
   postAssignment,
@@ -425,4 +489,5 @@ module.exports = {
   getAssignmentByMatiereCoriger,
   corrigerAssignment,
   getAssignmentByMatiereNonCoriger,
+  deleteManyAssignment,
 };
