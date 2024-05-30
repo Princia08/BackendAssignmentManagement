@@ -116,6 +116,8 @@ app.route(matiereUri).get(matiere.getAllMatieres).post(matiere.postMatiere);
 
 app.use(prefix + "/images", express.static(path.join(__dirname, "images")));
 
+app.route("/delteMany").delete(assignment.deleteManyAssignment);
+
 app.timeout = 300000;
 // On démarre le serveur
 app.listen(port, "0.0.0.0");
