@@ -90,7 +90,6 @@ function postAssignment(req, res) {
       console.error("Error saving assignment:", err);
       res.status(500).send("Error saving assignment");
     } else {
-      console.log(`Assignment "${savedAssignment.nom}" saved!`);
       res.status(201).json({ message: `${savedAssignment.nom} saved!` });
     }
   });
@@ -99,7 +98,6 @@ function postAssignment(req, res) {
 // Update d'un assignment (PUT)
 function updateAssignment(req, res) {
   console.log("UPDATE recu assignment : ");
-  console.log(req.body);
   Assignment.findByIdAndUpdate(
     req.body.id,
     req.body,
@@ -116,7 +114,7 @@ function updateAssignment(req, res) {
 }
 
 function deleteAssignment(req, res) {
-  Assignment.findByIdAndRemove(req.params._id, (err, assignment) => {
+  Assignment.findByIdAndRemove(req.params.id, (err, assignment) => {
     if (err) {
       res.send(err);
     }
@@ -248,7 +246,6 @@ async function getAssignmentByMatiereCoriger(req, res) {
     const matiereUser = await Matiere.findOne({
       "prof._id": data.user.id,
     }).exec();
-    console.log(data.user.id);
     // if (!matiereUser) {
     //   return res.status(404).json({ message: "Matiere not found" });
     // }
@@ -400,7 +397,6 @@ async function getAssignmentByMatiereNonCoriger(req, res) {
 
 function corrigerAssignment(req, res) {
   console.log("UPDATE recu assignment : ");
-  console.log(req.body._id);
   Assignment.findByIdAndUpdate(
     req.body._id,
     req.body,
