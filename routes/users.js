@@ -23,8 +23,8 @@ function getUser(req, res){
     })
 }
 
-function getMyInformation(req, res) {
-    let data = jwtService.verify(req.params.token)
+async function getMyInformation(req, res) {
+    let data = await jwtService.verify(req.params.token)
     User.findById(data.user.id, (err, user) =>{
         if(err){res.send(err)}
         res.json(user);
