@@ -26,7 +26,7 @@ function getUser(req, res){
 async function getMyInformation(req, res) {
     let data = await jwtService.verify(req.params.token)
     console.log(data)
-    User.findById(data.user.id, (err, user) =>{
+    User.findById(data.id, (err, user) =>{
         if(err){res.send(err)}
         res.json(user);
     })
