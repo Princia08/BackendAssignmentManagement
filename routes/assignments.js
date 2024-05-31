@@ -192,7 +192,6 @@ async function getAssignmentByMatiereNonCoriger(req, res) {
     const matiereUser = await Matiere.findOne({
       "prof._id": ObjectId(data.user.id),
     }).exec();
-    console.log(data.user.id);
     if (!matiereUser) {
       return res.status(404).json({ message: "Matiere not found" });
     }
