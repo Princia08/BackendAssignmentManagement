@@ -66,6 +66,7 @@ function getAssignmentDetails(req, res) {
   let assignmentId = req.params.id;
   Assignment.findById(assignmentId)
     .populate("idMatiere")
+    .populate("idUser")
     .exec((err, assignment) => {
       if (err) {
         res.send(err);

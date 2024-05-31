@@ -105,7 +105,6 @@ userUri = prefix + "/users";
 app.route(userUri).post(user.addUser).put(user.updateUser);
 
 app.route(userUri + "/:inactivated").get(user.getInactivatedUsers);
-
 app.route(userUri + "/:id").get(user.getUser);
 app.route(userUri + "/login").post(user.login);
 app.route(userUri + "/me/:token").get(user.getMyInformation);

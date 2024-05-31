@@ -7,7 +7,7 @@ let AssignmentSchema = Schema({
   nom: String,
   rendu: Boolean,
   idMatiere: { type: String, ref : 'matiere' },
-  idUser: String,
+  idUser: { type: String, ref : 'users' },
   file: String,
   remarque: String,
   note: Number
