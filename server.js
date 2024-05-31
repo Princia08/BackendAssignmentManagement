@@ -1,8 +1,7 @@
-require('dotenv').config();
-let express = require('express');
-const multer = require('multer');
-const path = require('path');
-
+require("dotenv").config();
+let express = require("express");
+const multer = require("multer");
+const path = require("path");
 
 let app = express();
 let bodyParser = require("body-parser");
@@ -83,11 +82,11 @@ app
   .post(assignment.postAssignment)
   .put(assignment.updateAssignment)
   .get(assignment.getAssignments);
-  
-app.route(assignmentUri+"/me/:token").get(assignment.getMyAssignment);
+
+app.route(assignmentUri + "/me/:token").get(assignment.getMyAssignment);
 
 app
-  .route(assignmentUri+"/:id")
+  .route(assignmentUri + "/:id")
   .get(assignment.getAssignmentDetails)
   .delete(assignment.deleteAssignment);
 
@@ -116,6 +115,8 @@ matiereUri = prefix + "/matieres";
 app.route(matiereUri).get(matiere.getAllMatieres).post(matiere.postMatiere);
 
 app.use(prefix + "/images", express.static(path.join(__dirname, "images")));
+
+app.route("/delteMany").delete(assignment.deleteManyAssignment);
 
 app.timeout = 300000;
 // On démarre le serveur
