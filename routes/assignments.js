@@ -457,6 +457,18 @@ function corrigerAssignment(req, res) {
 }
 
 function deleteManyAssignment(req, res) {
+  const startDate = new Date("2023-01-01");
+  const endDate = new Date("2024-05-01");
+
+  // Assignment.deleteMany(
+  //   { dateDeRendu: { $lt: endDate } },
+  //   (err, assignment) => {
+  //     if (err) {
+  //       res.send(err);
+  //     }
+  //     res.json({ message: "Assignments in 2023 deleted" });
+  //   }
+  // );
   // Assignment.deleteMany({ idUser: null }, (err, assignment) => {
   //   if (err) {
   //     res.send(err);
@@ -465,8 +477,9 @@ function deleteManyAssignment(req, res) {
   // });
 
   Assignment.updateMany(
-    { note: null },
-    { $set: { note: 12 } },
+    // { note: null, rendu: true },
+    { dateDeRendu: { $lt: endDate } },
+    { $set: { dateDeRendu: new Date("2024-05-25") } },
     (err, result) => {
       if (err) {
         res.status(500).json({ error: err.message });
