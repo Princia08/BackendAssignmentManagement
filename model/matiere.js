@@ -6,7 +6,7 @@ const mongoosePaginate = require("mongoose-aggregate-paginate-v2");
 let MatiereSchema = Schema({
   nom: String,
   prof: {
-    id: String,
+    _id: ObjectID, 
     nom: String,
     prenom: String,
     image: String,
